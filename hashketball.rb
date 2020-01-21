@@ -1,3 +1,4 @@
+require "pry"
 
 def game_hash
   main_hash = {:home => {:team_name => "", :colors => [], :players => []}, :away => {:team_name => "", :colors => [], :players => []}}
@@ -36,13 +37,27 @@ def parse_data(team_head_data, player_file_name, hash)
     hash
 end
 
-def num_points_scored(pl_name)    
-    value = get_player_by_name(pl_name)
+# def num_points_scored(pl_name)    
+#     value = get_player_by_name(pl_name)
 
-    if(value != nil)
-        value = value[:points]
+#     if(value != nil)
+#         value = value[:points]
+#     end
+#     value    
+# end
+
+def num_points_scored(pl_name)
+  game_hash.each do |team_side, team_data|
+    team_data.each do |key, values|
+      if(key == :players)
+        values.each do |player|
+          if(player[:player_name] == pl_name)
+            return player[:points]
+          end
+        end
+      end
     end
-    value    
+  end
 end
 
 def get_player_by_name(pl_name)
@@ -78,21 +93,36 @@ def team_colors(team_name)
   
 def get_team_by_name(team_name)
   hash = game_hash    
-  value = nil
-  if(hash[:home][:team_name] == team_name)
-      value = hash[:home]
-  else
-      value = hash[:away]
+  hash.each do |team, values|
+  if(values[:team_name] == team_name)
+    return values
   end
-  value
+  end
 end
 
-def player_numbers(team_name)
-  team = get_team_by_name(team_name)
-  value = team[:players].map{|player| player = player[:number]}
-  value = value.sort        
-  value    
-end
+  
+
+# def player_numbers(team_name)
+  
+#   hash = game_hash
+#   mymap = hash.map{|team_side, team|
+#     if(team[:team_name] == team_name)
+#       team.each do |attribute, values|
+  
+#         if(attribute == :players)
+  
+#           values.each do |player|
+  
+#             player[:number]
+#           end
+#         end
+#       end
+#     end
+#   }
+#   puts "outputing mymap"
+#   pp mymap
+#   binding.pry
+# end
   
 def player_stats(player_name)
   value = get_player_by_name(player_name)        
